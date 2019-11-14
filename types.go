@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//qb "github.com/Masterminds/squirrel"
+	qb "github.com/Masterminds/squirrel"
 	"reflect"
 	//"strings"
 )
@@ -57,7 +57,8 @@ func (m *Model) Create(data interface{}) (interface{}, bool) {
 	inputsql := []string{"insert", "into", m.tablename}
 	inputsql = append(inputsql, fields...)
 
-	//sql, _, _ := qb.Insert(m.tablename).Columns(fields).ToSql()
+  sql, _, _ := qb.Insert(m.tablename).Columns("aa").ToSql()
 	fmt.Println(inputsql)
+  fmt.Println(sql)
 	return data, true
 }
