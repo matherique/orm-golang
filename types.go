@@ -16,12 +16,13 @@ type Field struct {
 	name string
 	t    interface{}
 }
+
 type Model struct {
 	fields    []Field
 	tablename string
 }
 
-func (m *Model) validate(data interface{}) bool {
+func (m *Model) validate(data []string) bool {
 	t := reflect.TypeOf(data)
 
 	for _, f := range m.fields {
@@ -34,31 +35,25 @@ func (m *Model) validate(data interface{}) bool {
 	return true
 }
 
-func (m *Model) getFields(data interface{}) []string {
-	var fields []string
-	t := reflect.TypeOf(data)
+func (m *Model) getInfoFromData(data map[string]interface{}) ([]string, []interface{}) {
+	keys := make([]string, 0, len(data))
+	values := make([]interface{}, 0, len(data))
 
-	for _, f := range m.fields {
-		fi, _ := t.FieldByName(f.name)
-		fields = append(fields, fi.Name)
+	for k, v := range data {
+		keys = append(keys, k)
+		values = append(values, v)
 	}
 
-	return fields
+	return keys, values
 }
 
-func (m *Model) Create(data interface{}) (interface{}, bool) {
-	v := m.validate(data)
-	if v == false {
-		return nil, false
-	}
+func (m *Model) Create(data map[string]interface{}) (interface{}, bool) {
+	keys, values := m.getInfoFromData(data)
 
-	fields := m.getFields(data)
+	sql, _, _ := qb.Insert(m.tablename).Columns(keys...).Values(values...).ToSql()
+	fmt.Println(sql)
 
-	inputsql := []string{"insert", "into", m.tablename}
-	inputsql = append(inputsql, fields...)
+	// execute query and get return
 
-  sql, _, _ := qb.Insert(m.tablename).Columns("aa").ToSql()
-	fmt.Println(inputsql)
-  fmt.Println(sql)
 	return data, true
 }

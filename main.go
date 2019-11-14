@@ -33,12 +33,14 @@ var user = Model{fields: []Field{
 }
 
 func main() {
+	var userdata = make(map[string]interface{})
 
-	response, _ := user.Create(User{
-		nome:  "Matheus Henrique dos Santos",
-		email: "matherique@gmail.com",
-		senha: "senhateste",
-	})
+	userdata["nome"] = "Matheus Henrique dos Santos"
+	userdata["email"] = "matherique@gmail.com"
+	userdata["senha"] = "senhateste"
 
-	fmt.Println(response)
+	fmt.Println(userdata)
+
+	resp, _ := user.Create(userdata)
+	fmt.Println(resp)
 }
